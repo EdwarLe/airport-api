@@ -8,8 +8,4 @@ app.use(express.json());
 
 app.use('/api/v1', routerPassenger)
 
-
-
-app.listen(3000, () => {
-  console.log("Server is runing on port 3000 😁");
-});
+export default app
