@@ -2,7 +2,7 @@ import { PassengerService } from "./passengers.service.js";
 
 const passengerService = new PassengerService();
 
-export const findAllPassengers = async(req, res) => {
+export const findAllPassengers = async (req, res) => {
   try {
     const passengers = await passengerService.findAllPassengers();
     return res.status(201).json(passengers);
@@ -20,29 +20,66 @@ export const createPassenger = async (req, res) => {
   }
 };
 
-export const findOnePassenger = (req, res) => {
-  const { id } = req.params;
+export const findOnePassenger = async (req, res) => {
+  try {
+    const { id } = req.params;
 
-  res.json({
-    message: "Aquí se recibirá un pasajero por id",
-    id,
-  });
+    const passenger = await passengerService.findOnePassenger(id);
+
+    if (!passenger) {
+      return res.status(404).json({
+        status: "error",
+        message: `Passenger with id: ${id} not found`,
+      });
+    }
+
+    return res.json(passenger);
+  } catch (error) {
+    return res.status(500).json(error);
+  }
 };
 
-export const updatePassenger = (req, res) => {
-  const { id } = req.params;
+export const updatePassenger = async (req, res) => {
+  try {
+    const { id } = req.params;
 
-  res.json({
-    message: "Aquí se actualizará un pasajero por id",
-    id,
-  });
+    const passenger = await passengerService.findOnePassenger(id);
+
+    if (!passenger) {
+      return res.status(404).json({
+        status: "error",
+        message: `Passenger with id: ${id} not found`,
+      });
+    }
+
+    const updatePassenger = await passengerService.updatePassenger(
+      passenger,
+      req.body
+    );
+
+    return res.json(updatePassenger);
+  } catch (error) {
+    return res.status(500).json(error);
+  }
 };
 
-export const deletePassenger = (req, res) => {
-  const { id } = req.params;
+export const deletePassenger = async (req, res) => {
+  try {
+    const { id } = req.params;
 
-  res.json({
-    message: "Aquí se eliminaá un pasajero por id",
-    id,
-  });
+    const passenger = await passengerService.findOnePassenger(id);
+
+    if (!passenger) {
+      return res.status(404).json({
+        status: "error",
+        message: `Passenger with id: ${id} not found`,
+      });
+    }
+
+    await passengerService.deletePassenger(passenger);
+
+    return res.status(204).json(null);
+  } catch (error) {
+    return res.status(500).json(error)
+  }
 };

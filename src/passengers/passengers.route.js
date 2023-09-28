@@ -10,11 +10,11 @@ import {
 
 export const router = Router();
 
-router.route('/passengers')
+router.route('/')
 .get(findAllPassengers)
 .post(createPassenger)
 
-router.route('/passengers/:id')
+router.route('/:id')
 .get(findOnePassenger)
 .patch(updatePassenger)
 .delete(deletePassenger)
