@@ -1,4 +1,7 @@
-import { validatePartialPassenger, validatePassenger } from "./passenger.schema.js";
+import {
+  validatePartialPassenger,
+  validatePassenger,
+} from "./passengers.schema.js";
 import { PassengerService } from "./passengers.service.js";
 
 const passengerService = new PassengerService();
@@ -14,39 +17,29 @@ export const findAllPassengers = async (req, res) => {
 
 export const createPassenger = async (req, res) => {
   try {
+    const { hasError, errorMessage, passengerData } = validatePassenger(
+      req.body
+    );
 
-    const { hasError, errorMessage, passengerData } = validatePassenger(req.body);
-
-    if(hasError) {
+    if (hasError) {
       return res.status(421).json({
-        status: 'error',
-        message: errorMessage
-      })
+        status: "error",
+        message: errorMessage,
+      });
     }
 
     const passenger = await passengerService.createPassenger(passengerData);
 
     return res.status(201).json(passenger);
-
   } catch (error) {
-
-    return res.status(500).json({status:error,
-    message:"salto aqui"});
+    return res.status(500).json(error);
   }
 };
 
 export const findOnePassenger = async (req, res) => {
   try {
-    const { id } = req.params;
-
-    const passenger = await passengerService.findOnePassenger(id);
-
-    if (!passenger) {
-      return res.status(404).json({
-        status: "error",
-        message: `Passenger with id: ${id} not found`,
-      });
-    }
+    
+    const {passenger} = req
 
     return res.json(passenger);
   } catch (error) {
@@ -56,26 +49,18 @@ export const findOnePassenger = async (req, res) => {
 
 export const updatePassenger = async (req, res) => {
   try {
+    const { hasError, errorMessage, passengerData } = validatePartialPassenger(
+      req.body
+    );
 
-    const {hasError, errorMessage, passengerData} = validatePartialPassenger(req.body)
-
-    if(hasError) {
+    if (hasError) {
       return res.status(421).json({
-        status: 'error',
-        message: errorMessage
-      })
-    }
-
-    const { id } = req.params;
-
-    const passenger = await passengerService.findOnePassenger(id);
-
-    if (!passenger) {
-      return res.status(404).json({
         status: "error",
-        message: `Passenger with id: ${id} not found`,
+        message: errorMessage,
       });
     }
+
+    const {passenger} = req
 
     const updatePassenger = await passengerService.updatePassenger(
       passenger,
@@ -90,16 +75,7 @@ export const updatePassenger = async (req, res) => {
 
 export const deletePassenger = async (req, res) => {
   try {
-    const { id } = req.params;
-
-    const passenger = await passengerService.findOnePassenger(id);
-
-    if (!passenger) {
-      return res.status(404).json({
-        status: "error",
-        message: `Passenger with id: ${id} not found`,
-      });
-    }
+    const {passenger} = req
 
     await passengerService.deletePassenger(passenger);
 

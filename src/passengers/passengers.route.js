@@ -7,6 +7,7 @@ import {
   findOnePassenger,
   updatePassenger,
 } from "./passengers.controller.js";
+import { validateExistPassenger } from "./passengers.middlewares.js";
 
 export const router = Router();
 
@@ -15,6 +16,6 @@ router.route('/')
 .post(createPassenger)
 
 router.route('/:id')
-.get(findOnePassenger)
-.patch(updatePassenger)
-.delete(deletePassenger)
+.get(validateExistPassenger, findOnePassenger)
+.patch(validateExistPassenger, updatePassenger)
+.delete(validateExistPassenger, deletePassenger)

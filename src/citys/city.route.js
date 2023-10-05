@@ -1,5 +1,6 @@
 import { Router} from "express";
 import { createCity, deleteCity, findAllCities, findOneCity, updateCity } from "./city.controller.js";
+import { validateExistCity } from "./city.middlewares.js";
 
 export const router = Router()
 
@@ -8,6 +9,6 @@ router.route('/')
 .post(createCity)
 
 router.route('/:id')
-.get(findOneCity)
-.patch(updateCity)
-.delete(deleteCity)
+.get(validateExistCity, findOneCity)
+.patch(validateExistCity, updateCity)
+.delete(validateExistCity, deleteCity)
