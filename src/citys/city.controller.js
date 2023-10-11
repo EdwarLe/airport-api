@@ -1,11 +1,10 @@
+import { catchAsync } from "../errors/catchAsync.js";
 import { validateCity, validatePartialCity } from "./city.schema.js";
 import { CityService } from "./city.service.js";
 
 const cityService = new CityService();
 
-export const createCity = async (req, res) => {
-  try {
-
+export const createCity = catchAsync(async (req, res, next) => {
     const { hasError, errorMessage, cityData } = validateCity(req.body);
 
     if (hasError) {
@@ -18,38 +17,21 @@ export const createCity = async (req, res) => {
     const city = await cityService.createCity(cityData);
 
     return res.status(201).json(city);
+});
 
-  } catch (error) {
-    return res.status(500).json(console.log(error));
-  }
-};
-
-export const findAllCities = async (req, res) => {
-  try {
+export const findAllCities = catchAsync(async (req, res, next) => {
 
     const cities = await cityService.findAllCitys();
 
     return res.status(201).json(cities);
+});
 
-  } catch (error) {
-    return res.status(500).json(error);
-  }
-};
-
-export const findOneCity = async (req, res) => {
-  try {
-
+export const findOneCity = catchAsync(async (req, res, next) => {
     const {city} = req
     return res.status(201).json(city);
+});
 
-  } catch (error) {
-    return res.status(500).json(error);
-  }
-};
-
-export const updateCity = async (req, res) => {
-  try {
-    
+export const updateCity = catchAsync(async (req, res, next) => {
     const {hasError, errorMessage, cityData} = validatePartialCity(req.body)
 
     if(hasError) {
@@ -64,21 +46,12 @@ export const updateCity = async (req, res) => {
     const updateCity = await cityService.updateCity(city, cityData);
 
     return res.json(updateCity);
-  } catch (error) {
-    return res.status(500).json(error);
-  }
-};
+});
 
-export const deleteCity = async (req, res) => {
-  try {
-
+export const deleteCity = catchAsync(async (req, res, next) => {
     const {city} = req
 
     await cityService.deleteCity(city);
 
     return res.status(204).json(null);
-
-  } catch (error) {
-    return res.status(500).json(error);
-  }
-};
+});

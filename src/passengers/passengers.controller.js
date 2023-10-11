@@ -1,3 +1,4 @@
+import { AppError, catchAsync } from "../errors/index.js";
 import {
   validatePartialPassenger,
   validatePassenger,
@@ -6,17 +7,12 @@ import { PassengerService } from "./passengers.service.js";
 
 const passengerService = new PassengerService();
 
-export const findAllPassengers = async (req, res) => {
-  try {
-    const passengers = await passengerService.findAllPassengers();
-    return res.status(201).json(passengers);
-  } catch (error) {
-    return res.status(500).json(error);
-  }
-};
+export const findAllPassengers = catchAsync(async (req, res, next) => {
+  const passengers = await passengerService.findAllPassengers();
+  return res.status(201).json(passengers);
+});
 
-export const createPassenger = async (req, res) => {
-  try {
+export const createPassenger = catchAsync(async (req, res, next) => {
     const { hasError, errorMessage, passengerData } = validatePassenger(
       req.body
     );
@@ -26,29 +22,20 @@ export const createPassenger = async (req, res) => {
         status: "error",
         message: errorMessage,
       });
+
+      // return next(new AppError(errorMessage, 422))
     }
 
     const passenger = await passengerService.createPassenger(passengerData);
-
     return res.status(201).json(passenger);
-  } catch (error) {
-    return res.status(500).json(error);
-  }
-};
+});
 
-export const findOnePassenger = async (req, res) => {
-  try {
-    
-    const {passenger} = req
-
+export const findOnePassenger = catchAsync(async (req, res, next) => {
+    const { passenger } = req;
     return res.json(passenger);
-  } catch (error) {
-    return res.status(500).json(error);
-  }
-};
+});
 
-export const updatePassenger = async (req, res) => {
-  try {
+export const updatePassenger = catchAsync(async (req, res, next) => {
     const { hasError, errorMessage, passengerData } = validatePartialPassenger(
       req.body
     );
@@ -60,27 +47,18 @@ export const updatePassenger = async (req, res) => {
       });
     }
 
-    const {passenger} = req
-
+    const { passenger } = req;
     const updatePassenger = await passengerService.updatePassenger(
       passenger,
       passengerData
     );
-
     return res.json(updatePassenger);
-  } catch (error) {
-    return res.status(500).json(error);
-  }
-};
 
-export const deletePassenger = async (req, res) => {
-  try {
-    const {passenger} = req
+})
+
+export const deletePassenger = catchAsync(async (req, res, next) => {
+    const { passenger } = req;
 
     await passengerService.deletePassenger(passenger);
-
     return res.status(204).json(null);
-  } catch (error) {
-    return res.status(500).json(error);
-  }
-};
+});
