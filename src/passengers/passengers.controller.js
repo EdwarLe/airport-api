@@ -22,8 +22,6 @@ export const createPassenger = catchAsync(async (req, res, next) => {
         status: "error",
         message: errorMessage,
       });
-
-      // return next(new AppError(errorMessage, 422))
     }
 
     const passenger = await passengerService.createPassenger(passengerData);
