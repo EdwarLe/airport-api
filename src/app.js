@@ -2,18 +2,21 @@ import express from "express";
 
 import { router } from "./routes/routes.js";
 import { AppError } from "./errors/appError.js";
-import morgan from "morgan";
 import { envs } from "./config/environments/environment.js";
 import { globalErrorHandler } from "./errors/error.controller.js";
+import { enableCors } from "./config/plugins/cors.plugin.js";
+import { enableMorgan } from "./config/plugins/morgan.plugin.js";
 const app = express();
 
 app.use(express.json());
 
+const ACCEPTED_ORIGINS = ['http://localhost:8080', 'http://localhost:4200']
+
 if(envs.NODE_ENV === "development") {
-    app.use(morgan('dev'))
+    enableMorgan()
 }
 
-
+enableCors(app, ACCEPTED_ORIGINS)
 
 app.use('/api/v1', router)
 
