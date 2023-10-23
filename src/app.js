@@ -13,7 +13,7 @@ app.use(express.json());
 const ACCEPTED_ORIGINS = ['http://localhost:8080', 'http://localhost:4200']
 
 if(envs.NODE_ENV === "development") {
-    enableMorgan()
+    enableMorgan(app)
 }
 
 enableCors(app, ACCEPTED_ORIGINS)
