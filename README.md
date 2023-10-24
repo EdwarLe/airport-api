@@ -3,9 +3,9 @@
 1. Clonar el siguiente repositorio: https://github.com/EdwarLe/airport-api.
 
 2. Ejecutar el comando:
-'''
+```
 nmp instal
-'''
+```
 
 3. Clonar el archivo '.env.template' y renombrarlo a '.env' y agregar las variables de entorno.
 
