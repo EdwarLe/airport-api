@@ -9,7 +9,7 @@ nmp instal
 
 3. Clonar el archivo `.env.template` y renombrarlo a `.env` y agregar las variables de entorno.
 
-4. Ejecutar el comando:
+4. Ejecutar el comando para levantar la base de datos:
 ```
 docker-compose up -d
 ```
