@@ -6,6 +6,15 @@ export class AuthService {
         return await User.create(data)
     }
 
+    async findOneUserById(id) {
+        return await User.findOne({
+            where: {
+                id,
+                status: true
+            }
+        })
+    }
+
     async findOneUserByEmail(email) {
         return await User.findOne({
             where:{
@@ -17,5 +26,9 @@ export class AuthService {
 
     async updateUser(user, data) {
         return await user.update(data)
+    }
+
+    async deleteUser(user) {
+        return await user.update({status: false})
     }
 }

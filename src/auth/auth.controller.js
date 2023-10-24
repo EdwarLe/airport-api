@@ -33,6 +33,7 @@ export const login = catchAsync(async (req, res, next) => {
  return res.status(200).json({
     token,
     user: {
+        id: user.id,
         fullname: user.fullname,
         email: user.email,
         role: user.role,
@@ -67,15 +68,15 @@ export const register = catchAsync(async (req, res, next) => {
 });
 
 export const changePassword = catchAsync(async(req, res, next) => {
-    const {user} = req
+    const {sessionUser} = req
 
-    const {currentPassword, newPassword} = verifyPassword(req.body)
+    const {currentPassword, newPassword} = req.body
 
     if(currentPassword === newPassword) {
         return next(new AppError('The password cannot be equals'))
     }
 
-    const isCorrectPassword = await verifyPassword(currentPassword,user.password)
+    const isCorrectPassword = await verifyPassword(currentPassword, sessionUser.password)
 
     if(!isCorrectPassword) {
         return next(new AppError('Incorrect email or password', 401))
@@ -83,7 +84,7 @@ export const changePassword = catchAsync(async(req, res, next) => {
 
     const hashedNewPassword = await encryptedPassword(newPassword)
 
-    await authService.updateUser(user, {
+    await authService.updateUser(sessionUser, {
         password: hashedNewPassword,
         changedPasswordAt: new Date()
     })
@@ -91,4 +92,12 @@ export const changePassword = catchAsync(async(req, res, next) => {
     return res.status(200).json({
         message: 'The user password was updated successfully'
     })
+})
+
+export const deleteAcount = catchAsync(async(req, res, next) => {
+  const {user} = req
+
+  await authService.deleteUser(user)
+
+  return res.status(204).json(null)
 })
